@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compression App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            padding: 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .compression-options {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .compression-slider {
+            width: 70%;
+            height: 5px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .compression-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .compression-value {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .compress-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .compress-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .compress-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .success {
+            background: rgba(46, 213, 115, 0.2);
+        }
+
+        .error {
+            background: rgba(255, 71, 87, 0.2);
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .image-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .image-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .image-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .image-info p {
+            margin: 0.3rem 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .download-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.8rem;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 0;
+                padding: 1rem;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Compression App</h1>
+        
+        <div class="upload-section">
+            <div class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                <p>Click to upload or drag and drop</p>
+                <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg" onchange="handleFileSelect(event)">
+            </div>
+            <div class="file-info" id="fileInfo"></div>
+            
+            <div class="compression-options">
+                <input type="range" min="10" max="90" value="80" class="compression-slider" id="compressionSlider">
+                <span class="compression-value" id="compressionValue">80%</span>
+            </div>
+            
+            <button class="compress-btn" id="compressBtn" disabled>Compress Image</button>
+            <div id="status" class="status"></div>
+        </div>
+
+        <div class="images-grid" id="imagesGrid"></div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+        const maxFileSize = 30 * 1024 * 1024; // 30MB
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfo = document.getElementById('fileInfo');
+            const compressBtn = document.getElementById('compressBtn');
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = ''; // Clear previous status
+            
+            if (!file) {
+                fileInfo.textContent = '';
+                compressBtn.disabled = true;
+                selectedFile = null;
+                return;
+            }
+            
+            // Check file size
+            if (file.size > maxFileSize) {
+                fileInfo.textContent = `File too large. Maximum size is 30MB.`;
+                fileInfo.style.color = 'rgba(255, 71, 87, 0.8)';
+                compressBtn.disabled = true;
+                selectedFile = null;
+                return;
+            }
+            
+            // Check file type
+            if (!allowedTypes.includes(file.type)) {
+                fileInfo.textContent = `Invalid file type. Only PNG, JPEG, and JPG files are allowed.`;
+                fileInfo.style.color = 'rgba(255, 71, 87, 0.8)';
+                compressBtn.disabled = true;
+                selectedFile = null;
+                return;
+            }
+            
+            fileInfo.textContent = `Selected: ${file.name} (${formatSize(file.size)})`;
+            fileInfo.style.color = 'rgba(255, 255, 255, 0.8)';
+            compressBtn.disabled = false;
+            selectedFile = file;
+        }
+        
+        document.getElementById('compressionSlider').addEventListener('input', function() {
+            document.getElementById('compressionValue').textContent = this.value + '%';
+        });
+        
+        document.getElementById('compressBtn').addEventListener('click', function() {
+            if (selectedFile) {
+                handleFileUpload(selectedFile);
+            }
+        });
+        
+        async function handleFileUpload(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            // Add compression quality
+            const quality = document.getElementById('compressionSlider').value;
+            formData.append('quality', quality);
+            
+            const compressBtn = document.getElementById('compressBtn');
+            compressBtn.disabled = true;
+            compressBtn.textContent = 'Compressing...';
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                const statusDiv = document.getElementById('status');
+                if (response.ok) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `Image compressed successfully! Original size: ${formatSize(data.originalSize)}, Compressed size: ${formatSize(data.compressedSize)} (${data.compressionRatio}% reduction)`;
+                    loadImages();
+                    
+                    // Reset file selection
+                    document.getElementById('fileInput').value = '';
+                    document.getElementById('fileInfo').textContent = '';
+                    selectedFile = null;
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = data.error || 'Upload failed';
+                }
+            } catch (error) {
+                const statusDiv = document.getElementById('status');
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Upload failed: ' + error.message;
+            } finally {
+                compressBtn.disabled = false;
+                compressBtn.textContent = 'Compress Image';
+            }
+        }
+        
+        async function loadImages() {
+            try {
+                const response = await fetch('/images');
+                const images = await response.json();
+                
+                const grid = document.getElementById('imagesGrid');
+                grid.innerHTML = images.map(image => `
+                    <div class="image-card">
+                        <div class="image-info">
+                            <p>Original: ${image.originalName}</p>
+                            <p>Original Size: ${formatSize(image.originalSize)}</p>
+                            <p>Compressed Size: ${formatSize(image.compressedSize)}</p>
+                            <p>Compression Ratio: ${image.compressionRatio}% reduction</p>
+                        </div>
+                        <button class="download-btn" onclick="downloadImage('${image.compressedName}')">
+                            Download Compressed Image
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading images:', error);
+            }
+        }
+        
+        function downloadImage(filename) {
+            window.location.href = `/download/${filename}`;
+        }
+        
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Load images when page loads
+        loadImages();
+    </script>
+</body>
+</html> 
